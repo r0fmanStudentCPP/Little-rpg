@@ -1,0 +1,85 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+const int SIZE_INVENTORY = 5;
+
+// Create the Entity class
+class Entity 
+{
+private:
+	int HP;
+	int Mana;
+	int Damage;
+	std::string name;
+	std::vector<std::string> Inventory;
+
+public:
+	// Entity constructor
+	Entity(int H, int M, int DMG, std::string N, const std::vector<std::string>& inv)
+	{
+		this->HP = H;
+		this->Mana = M;
+		this->Damage = DMG;
+		this->name = N;
+		this->Inventory = inv;
+		
+		if (Inventory.size() > SIZE_INVENTORY) {
+			std::cout << "Warning: Inventory of " << name << " is full!" << std::endl;
+		}
+	}
+
+	// Function to take damage
+	void TakeDamage(int incomingDamage)
+	{
+		HP -= incomingDamage;
+		
+		if (HP < 0) // Health cannot be negative, so we cap it at 0
+		{
+			HP = 0;
+		}
+
+		std::cout << name << " takes " << incomingDamage << " damage. HP left: " << HP << std::endl;
+
+		if (HP <= 0)
+		{
+			std::cout << name << " has died!" << std::endl;
+		}
+	}
+
+	// Function to attack an entity
+	void Attack(Entity& target)
+	{
+		if (this->HP <= 0)
+		{
+			std::cout << name << " cannot attack because they are dead :3" << std::endl;
+			return;
+		}
+
+		std::cout << name << " attacks " << target.GetName() << " and deals " << Damage << " damage!" << std::endl;
+		target.TakeDamage(this->Damage);
+	}
+
+	std::string GetName() const
+	{
+		return name;
+	}
+};
+
+int main()
+{
+	// Create inventories for the entities
+	std::vector<std::string> KnightItem = { "Sword", "Potion" };
+	std::vector<std::string> GoblinItem = { "Dagger", "Potion" };
+
+	Entity Knight{ 100, 60, 15, "Knight", KnightItem };
+	Entity Goblin{ 60, 30, 8, "Goblin", GoblinItem };
+
+	Knight.Attack(Goblin);
+	Knight.Attack(Goblin);
+	Knight.Attack(Goblin);
+	Knight.Attack(Goblin);
+	Goblin.Attack(Knight);
+	
+	return 0;
+}
